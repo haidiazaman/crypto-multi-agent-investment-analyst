@@ -5,7 +5,7 @@ from typing import Optional, Dict, List
 # ==================== CoinGecko API ====================
 COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3"
 
-def get_coin_price(coin_id: str = "bitcoin", vs_currency: str = "sgd") -> Optional[Dict]:
+def get_current_coin_price(coin_id: str = "bitcoin", vs_currency: str = "usd") -> Optional[Dict]:
     """
     Fetches the current price of a cryptocurrency in a specified currency.
 
@@ -28,9 +28,9 @@ def get_coin_price(coin_id: str = "bitcoin", vs_currency: str = "sgd") -> Option
         print(f"Error fetching price from CoinGecko: {e}")
         return None
 
-def get_coin_market_data(coin_id: str = "bitcoin") -> Optional[Dict]:
+def get_current_coin_market_data(coin_id: str = "bitcoin") -> Optional[Dict]:
     """
-    Retrieves detailed market data for a specific cryptocurrency.
+    Retrieves current detailed market data for a specific cryptocurrency.
 
     Args:
         coin_id (str): The CoinGecko ID of the cryptocurrency.
@@ -50,7 +50,12 @@ def get_coin_market_data(coin_id: str = "bitcoin") -> Optional[Dict]:
         result = {}
         useful_keys = ['description', 'sentiment_votes_up_percentage', 'sentiment_votes_down_percentage', 'watchlist_portfolio_users', 'market_cap_rank']
         for key in useful_keys:
-            result[key] = response.json()[key]
+            if key == "description":
+                value = response.json()[key]['en']
+            else:
+                value = response.json()[key]
+
+            result[key] = value
 
         return result
     
@@ -58,9 +63,9 @@ def get_coin_market_data(coin_id: str = "bitcoin") -> Optional[Dict]:
         print(f"Error fetching market data from CoinGecko: {e}")
         return None
 
-def get_trending_coins() -> Optional[List[Dict]]:
+def get_current_trending_coins() -> Optional[List[Dict]]:
     """
-    Fetches the list of trending coins on CoinGecko.
+    Fetches the current list of trending coins on CoinGecko.
 
     Returns:
         list: A list of trending coins with the following info: ['name', 'id', 'market_cap_rank', 'price_btc']
@@ -74,15 +79,12 @@ def get_trending_coins() -> Optional[List[Dict]]:
         
         result = []
         useful_keys = ['name', 'id', 'market_cap_rank', 'price_btc']
-        result = []
         for res in response:
             r = {}
             for key in useful_keys:
                 r[key] = res[key]
             result.append(r)
-
         return result    
-
 
     except requests.exceptions.RequestException as e:
         print(f"Error fetching trending coins from CoinGecko: {e}")
