@@ -1,12 +1,10 @@
+import time
 from typing import List, Literal
-from langchain_core.messages import SystemMessage, ToolMessage, BaseMessage
+from langchain_core.messages import SystemMessage, ToolMessage, BaseMessage, HumanMessage, AIMessage
 from langgraph.graph import StateGraph, START, END, MessagesState
 from src.models.base import BaseLLM
 from src.tools.base import AgentTool
 
-# ============================================================================
-# Agent Class
-# ============================================================================
 
 class Agent:
     """
@@ -88,9 +86,70 @@ class Agent:
         
         return builder.compile()
     
-    def invoke(self, messages: List[BaseMessage]):
+    def invoke(self, messages: List[BaseMessage], stream_mode: str = "values"):
         """Run the agent"""
-        return self.graph.invoke({"messages": messages})
+        return self.graph.invoke({"messages": messages}, stream_mode=stream_mode)
+    
+    def _stream_final_response(self, content: str):
+        """Stream text content word by word"""
+        words = content.split()
+        print("\n")
+        for word in words:
+            print(word, end=" ", flush=True)
+            time.sleep(0.005)  # Adjust speed (0.05s = 20 words/sec)
+        print("\n")  # Newline at end
+
+    def stream(self, messages: List[BaseMessage], stream_mode: str = "values"):
+        """Run the agent in streaming mode"""
+        
+        # TODO: but can we see what the agent is thinking before the first Tool call?
+
+        print("\n")
+        tool_call_id_mapping = {} # id: name --> for functions
+        previous_len = len(messages)  # Track how many messages we've seen
+        for event in self.graph.stream({"messages": messages}, stream_mode=stream_mode):
+            current_messages = event["messages"]
+            new_messages = current_messages[previous_len:] # Get only NEW messages since last event
+            previous_len = len(current_messages)
+            
+            for message in new_messages:
+                if isinstance(message, AIMessage):
+                    if message.tool_calls:
+                        for tool_call in message.tool_calls:
+                            tool_call_id_mapping[tool_call["id"]] = tool_call['name']
+                            print(f"🔧 Calling: {tool_call['name']}, Args: {str(tool_call['args'])[:100]}...")                    
+                    elif message.content:
+                        print(f"\n💬 {message.content}")
+                        # self._stream_final_response(message.content)
+                
+                # elif isinstance(message, ToolMessage):
+                #     tool_id = message.tool_call_id
+                #     function_name = tool_call_id_mapping[tool_id]
+                #     print(f"output of {function_name}: {message.content}")
+
+    async def astream(self, messages: List[BaseMessage]):
+        """
+        Async stream
+        Run the agent in streaming mode with token-level streaming
+        To run you need to use asyncio --> asyncio.run(agent.astream(messages))
+        """
+        async for event in self.graph.astream_events({"messages": messages}, version="v2"):
+            kind = event["event"]
+            
+            # Tool calls
+            if kind == "on_chat_model_stream":
+                chunk = event["data"]["chunk"]
+                
+                if hasattr(chunk, 'tool_calls') and chunk.tool_calls:
+                    # Tool call detected
+                    for tc in chunk.tool_calls:
+                        if tc['name']:
+                            print(f"\n🔧 Calling: {tc['name']}\n")
+                
+                elif chunk.content:
+                    # Stream final response token by token
+                    print(chunk.content, end="", flush=True)
+
 
 
 if __name__ == "__main__":
@@ -127,12 +186,3 @@ if __name__ == "__main__":
     
     for msg in result["messages"]:
         msg.pretty_print()
-    
-    # Example: Create agent with OpenAI (would work the same way)
-    # openai_llm = OpenAILLM(model_name="gpt-4")
-    # openai_agent = Agent(
-    #     name="OpenAIMathAgent",
-    #     llm=openai_llm,
-    #     tools=tools,
-    #     system_prompt="You are a helpful math assistant."
-    # )

@@ -1,14 +1,15 @@
 import requests
-import pandas as pd
 import numpy as np
 from typing import Optional, Dict, List
-from datetime import datetime, timedelta
 
-# ==================== Historical OHLCV Data ====================
-
-def get_historical_ohlcv(coin_id: str = "bitcoin", vs_currency: str = "usd", days: int = 30) -> Optional[Dict]:
+def get_historical_close_prices_and_volumes(
+        coin_id: str = "bitcoin", 
+        vs_currency: str = "usd", 
+        days: int = 30
+    ) -> Optional[Dict]:
     """
-    Fetches historical OHLCV (Open, High, Low, Close, Volume) data for a cryptocurrency.
+    Fetches historical Close prices and Volume data for a cryptocurrency. 
+    Only daily interval prices can be fetched.
     
     Args:
         coin_id (str): CoinGecko coin ID (e.g., "bitcoin", "ethereum").
@@ -17,11 +18,11 @@ def get_historical_ohlcv(coin_id: str = "bitcoin", vs_currency: str = "usd", day
     
     Returns:
         dict: Historical price and volume data.
-              Example: {
-                  "prices": [[timestamp, price], ...],
-                  "volumes": [[timestamp, market_cap], ...],
+              Example for bitcoin 30 days: {
                   "coin_id": "bitcoin",
                   "days": 30
+                  "prices": [...],
+                  "volumes": [...],
               }
         None: If the request fails.
     """
@@ -30,47 +31,42 @@ def get_historical_ohlcv(coin_id: str = "bitcoin", vs_currency: str = "usd", day
         params = {
             "vs_currency": vs_currency,
             "days": days,
-            "interval": "daily" if days > 1 else "hourly"
+            "interval": "daily"
         }
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
         
         data = response.json()
-        prices, volumes = extract_prices_volumes_from_ohlcv(ohlcv_data=data)
+        prices, volumes = extract_prices_volumes_from_data(prices_volumes_data=data)
 
         result = {}
-        result['prices'] = prices
-        result['volumes'] = volumes
         result["coin_id"] = coin_id
         result["days"] = days
+        result['prices'] = prices
+        result['volumes'] = volumes
         return result
     
     except requests.exceptions.RequestException as e:
         print(f"Error fetching historical OHLCV data: {e}")
         return None
 
-# ==================== Helper Function ====================
-
-def extract_prices_volumes_from_ohlcv(ohlcv_data: Dict) -> tuple:
+def extract_prices_volumes_from_data(prices_volumes_data: Dict) -> tuple:
     """
-    Extracts price and volume lists from OHLCV data response.
+    Extracts price and volume lists from get_historical_close_prices_and_volumes(...) response.
     
     Args:
-        ohlcv_data (dict): Response from get_historical_ohlcv().
+        prices_volumes_data (dict): Response from https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart
     
     Returns:
         tuple: (prices_list, volumes_list)
     """
     try:
-        prices = [price[1] for price in ohlcv_data["prices"]]
-        volumes = [volume[1] for volume in ohlcv_data["total_volumes"]]
+        prices = [price[1] for price in prices_volumes_data["prices"]]
+        volumes = [volume[1] for volume in prices_volumes_data["total_volumes"]]
         return prices, volumes
     except Exception as e:
         print(f"Error extracting prices: {e}")
         return None, None
-
-
-# ==================== Technical Indicators Calculator ====================
 
 def calculate_technical_indicators(prices: List[float]) -> Optional[Dict]:
     """
@@ -106,8 +102,14 @@ def calculate_technical_indicators(prices: List[float]) -> Optional[Dict]:
             gains = np.where(deltas > 0, deltas, 0)
             losses = np.where(deltas < 0, -deltas, 0)
             
-            avg_gain = np.mean(gains[-period:])
-            avg_loss = np.mean(losses[-period:])
+            # First average
+            avg_gain = np.mean(gains[:period])
+            avg_loss = np.mean(losses[:period])
+            
+            # EMA for subsequent values
+            for i in range(period, len(gains)):
+                avg_gain = (avg_gain * (period - 1) + gains[i]) / period
+                avg_loss = (avg_loss * (period - 1) + losses[i]) / period
             
             if avg_loss == 0:
                 return 100
@@ -143,11 +145,11 @@ def calculate_technical_indicators(prices: List[float]) -> Optional[Dict]:
         price_vs_sma20 = "above" if sma_20 and current_price > sma_20 else "below"
         
         return {
-            "rsi_14": round(rsi_14, 2) if rsi_14 else None,
-            "sma_20": round(sma_20, 2) if sma_20 else None,
-            "sma_50": round(sma_50, 2) if sma_50 else None,
-            "ema_12": round(ema_12, 2) if ema_12 else None,
-            "current_price": round(current_price, 2),
+            "rsi_14": round(rsi_14.item(), 2) if rsi_14 else None,
+            "sma_20": round(sma_20.item(), 2) if sma_20 else None,
+            "sma_50": round(sma_50.item(), 2) if sma_50 else None,
+            "ema_12": round(ema_12.item(), 2) if ema_12 else None,
+            "current_price": round(current_price.item(), 2),
             "price_vs_sma20": price_vs_sma20 if sma_20 else None,
             "trend_signal": trend_signal
         }
@@ -156,12 +158,9 @@ def calculate_technical_indicators(prices: List[float]) -> Optional[Dict]:
         print(f"Error calculating technical indicators: {e}")
         return None
 
-
-# ==================== Price Trend Analysis ====================
-
-def analyze_price_trend(prices: List[float], volumes: Optional[List[float]] = None) -> Optional[Dict]:
+def analyze_price_volume_trend(prices: List[float], volumes: Optional[List[float]] = None) -> Optional[Dict]:
     """
-    Analyzes price trends and momentum over different time periods.
+    Analyzes price trends and momentum over different time periods. Volume can also be passed.
     
     Args:
         prices (list): List of historical closing prices (chronological order).
@@ -227,13 +226,13 @@ def analyze_price_trend(prices: List[float], volumes: Optional[List[float]] = No
                 volume_trend = "stable"
         
         return {
-            "7d_return": round(return_7d, 2) if return_7d else None,
-            "30d_return": round(return_30d, 2) if return_30d else None,
-            "volatility_30d": round(volatility_30d, 2) if volatility_30d else None,
+            "7d_return": round(return_7d.item(), 2) if return_7d else None,
+            "30d_return": round(return_30d.item(), 2) if return_30d else None,
+            "volatility_30d": round(volatility_30d.item(), 2) if volatility_30d else None,
             "momentum": momentum,
             "strength": strength,
             "volume_trend": volume_trend,
-            "current_price": round(current_price, 2)
+            "current_price": round(current_price.item(), 2)
         }
     
     except Exception as e:
@@ -251,9 +250,9 @@ def test_forecasting_analysis_tools():
     
     # Test 1: Get Historical OHLCV
     print("1. Fetching Historical OHLCV for Bitcoin (30 days):")
-    ohlcv_data = get_historical_ohlcv("bitcoin", "usd", 30)
-    if ohlcv_data:
-        prices, volumes = ohlcv_data['prices'], ohlcv_data['volumes']
+    data = get_historical_close_prices_and_volumes("bitcoin", "usd", 30)
+    if data:
+        prices, volumes = data['prices'], data['volumes']
         print(f"Data points: {len(prices)}")
         print(f"Price range: ${min(prices):,.2f} - ${max(prices):,.2f}")
     
@@ -266,10 +265,9 @@ def test_forecasting_analysis_tools():
     # Test 3: Price Trend Analysis
     if prices and volumes:
         print("\n3. Analyzing Price Trend:")
-        trend = analyze_price_trend(prices, volumes)
+        trend = analyze_price_volume_trend(prices, volumes)
         print(trend)
 
 
 if __name__ == "__main__":
-    # Example usage
     test_forecasting_analysis_tools()
