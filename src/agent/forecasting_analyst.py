@@ -211,15 +211,18 @@ if __name__=="__main__":
     llm = OpenAILLMGenAIHub(model_name='gpt-4o', temperature=0.)
     agent = ForecastingTechnicalAnalystAgent(llm=llm)
 
-    while True:
+    # while True:
         # user_input = "Get Bitcoin's price history for the last 30 days"
         # user_input = "Give me a complete technical analysis of Ethereum"
         # user_input = "Is Solana bullish or bearish?"
         # user_input = "Compare the technical indicators of Bitcoin and Ethereum"
         # user_input = "Should I buy Bitcoin? What's my portfolio risk?" # should decline
 
-        user_input = input(f"\nask the {agent.name} sth (type /bye to exit): ")
-        if user_input == "/bye": break
+        # user_input = input(f"\nask the {agent.name} sth (type /bye to exit): ")
+        # if user_input == "/bye": break
 
-        # response = agent.stream(user_input)
-        response = asyncio.run(agent.astream(user_input))
+        # # response = agent.stream(user_input)
+        # response = asyncio.run(agent.astream(user_input))
+
+    # agent.conversation()
+    asyncio.run(agent.aconversation())

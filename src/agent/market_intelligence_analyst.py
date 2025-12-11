@@ -167,15 +167,18 @@ if __name__=="__main__":
     llm = OpenAILLMGenAIHub(model_name='gpt-4o', temperature=0.)
     agent = MarketAnalystAgent(llm=llm)
 
-    while True:
-        # user_input = "What's Ethereum's current price?"
-        # user_input = "What's the market sentiment for Bitcoin?"
-        # user_input = "What are the top trending cryptocurrencies right now?"
-        # user_input = "Give me a complete market overview of Solana"
-        # user_input = "Should I invest in Bitcoin? What's the technical analysis" # should decline
+    # while True:
+    #     # user_input = "What's Ethereum's current price?"
+    #     # user_input = "What's the market sentiment for Bitcoin?"
+    #     # user_input = "What are the top trending cryptocurrencies right now?"
+    #     # user_input = "Give me a complete market overview of Solana"
+    #     # user_input = "Should I invest in Bitcoin? What's the technical analysis" # should decline
 
-        user_input = input(f"\nask the {agent.name} sth (type /bye to exit): ")
-        if user_input == "/bye": break
+    #     user_input = input(f"\nask the {agent.name} sth (type /bye to exit): ")
+    #     if user_input == "/bye": break
 
-        # response = agent.stream(user_input)
-        response = asyncio.run(agent.astream(user_input))
+    #     # response = agent.stream(user_input)
+    #     response = asyncio.run(agent.astream(user_input))
+
+    # agent.conversation()
+    asyncio.run(agent.aconversation())

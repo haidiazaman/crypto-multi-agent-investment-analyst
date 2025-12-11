@@ -1,4 +1,5 @@
 import time
+import asyncio
 from typing import List, Literal
 from langchain_core.messages import SystemMessage, ToolMessage, BaseMessage, HumanMessage, AIMessage
 from langgraph.graph import StateGraph, START, END, MessagesState
@@ -150,6 +151,33 @@ class Agent:
                     # Stream final response token by token
                     print(chunk.content, end="", flush=True)
 
+    def conversation(self):
+        """Run synchronous conversation loop with memory and streaming"""
+        messages: list[BaseMessage] = []
+        
+        while True:
+            user_input = input("\n❓ ask me smth: ")
+            if user_input.lower() in ["/bye", "exit", "quit"]:
+                print("\n👋 End of conversation, bye!")
+                break
+            
+            messages.append(HumanMessage(content=user_input))
+            self.stream(messages=messages)
+            print()  # Newline after response
+
+    async def aconversation(self):
+        """Run async conversation loop with memory and streaming"""
+        messages: list[BaseMessage] = []
+        
+        while True:
+            user_input = input("\n❓ ask me smth: ")
+            if user_input.lower() in ["/bye", "exit", "quit"]:
+                print("\n👋 End of conversation, bye!")
+                break
+            
+            messages.append(HumanMessage(content=user_input))
+            await self.astream(messages=messages)
+            print()  # Newline after response
 
 
 if __name__ == "__main__":
