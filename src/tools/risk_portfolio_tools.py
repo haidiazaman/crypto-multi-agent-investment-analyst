@@ -24,7 +24,7 @@ def calculate_returns_from_prices(prices_data: Dict[str, List[float]]) -> Dict[s
         for coin, prices in prices_data.items():
             prices_array = np.array(prices)
             # Calculate returns: (price[i] - price[i-1]) / price[i-1]
-            returns = [(prices_array[i] - prices_array[i-1]) / prices_array[i-1] 
+            returns = [((prices_array[i] - prices_array[i-1]) / prices_array[i-1]).item() 
                       for i in range(1, len(prices_array))]
             returns_data[coin] = returns
         return returns_data
@@ -32,8 +32,6 @@ def calculate_returns_from_prices(prices_data: Dict[str, List[float]]) -> Dict[s
         print(f"Error calculating returns: {e}")
         return None
     
-# ==================== Portfolio Volatility Calculator ====================
-
 def calculate_portfolio_volatility(returns_data: Dict[str, List[float]], weights: Dict[str, float]) -> Optional[Dict]:
     """
     Calculates the volatility (standard deviation) of a portfolio.
@@ -76,8 +74,8 @@ def calculate_portfolio_volatility(returns_data: Dict[str, List[float]], weights
         individual_vols = (df.std() * np.sqrt(252)).to_dict()
         
         return {
-            "portfolio_volatility": round(portfolio_volatility, 4),
-            "portfolio_volatility_pct": round(portfolio_volatility * 100, 2),
+            "portfolio_volatility": round(portfolio_volatility.item(), 4),
+            "portfolio_volatility_pct": round(portfolio_volatility.item() * 100, 2),
             "individual_volatilities": {k: round(v, 4) for k, v in individual_vols.items()},
             "annualized": True
         }
@@ -85,9 +83,6 @@ def calculate_portfolio_volatility(returns_data: Dict[str, List[float]], weights
     except Exception as e:
         print(f"Error calculating portfolio volatility: {e}")
         return None
-
-
-# ==================== Value-at-Risk (VaR) Calculator ====================
 
 def calculate_var(returns_data: List[float], confidence_level: float = 0.95, portfolio_value: float = 10000) -> Optional[Dict]:
     """
@@ -122,10 +117,10 @@ def calculate_var(returns_data: List[float], confidence_level: float = 0.95, por
         worst_case_usd = worst_return * portfolio_value
         
         return {
-            "var_usd": round(abs(var_usd), 2),
-            "var_pct": round(abs(var_pct), 2),
-            "worst_case_1day_usd": round(worst_case_usd, 2),
-            "worst_case_1day_pct": round(worst_return * 100, 2),
+            "var_usd": round(abs(var_usd.item()), 2),
+            "var_pct": round(abs(var_pct.item()), 2),
+            "worst_case_1day_usd": round(worst_case_usd.item(), 2),
+            "worst_case_1day_pct": round(worst_return.item() * 100, 2),
             "confidence_level": confidence_level,
             "portfolio_value": portfolio_value
         }
@@ -133,9 +128,6 @@ def calculate_var(returns_data: List[float], confidence_level: float = 0.95, por
     except Exception as e:
         print(f"Error calculating VaR: {e}")
         return None
-
-
-# ==================== Portfolio Correlation Matrix ====================
 
 def calculate_correlation_matrix(returns_data: Dict[str, List[float]]) -> Optional[Dict]:
     """
@@ -180,17 +172,14 @@ def calculate_correlation_matrix(returns_data: Dict[str, List[float]]) -> Option
         return {
             "correlation_matrix": {k: {k2: round(v2, 3) for k2, v2 in v.items()} 
                                   for k, v in corr_dict.items()},
-            "average_correlation": round(avg_correlation, 3),
-            "diversification_score": round(diversification_score, 1),
+            "average_correlation": round(avg_correlation.item(), 3),
+            "diversification_score": round(diversification_score.item(), 1),
             "interpretation": "Higher score = better diversification"
         }
     
     except Exception as e:
         print(f"Error calculating correlation matrix: {e}")
         return None
-
-
-# ==================== Helper Function for Testing ====================
 
 def generate_sample_returns(coins: List[str], days: int = 100, seed: int = 42) -> Dict[str, List[float]]:
     """
@@ -215,8 +204,6 @@ def generate_sample_returns(coins: List[str], days: int = 100, seed: int = 42) -
     
     return returns_data
 
-
-# ==================== Test Function ====================
 
 def test_risk_portfolio_tools():
     """

@@ -51,7 +51,11 @@ def get_current_coin_market_data(coin_id: str = "bitcoin") -> Optional[Dict]:
         useful_keys = ['description', 'sentiment_votes_up_percentage', 'sentiment_votes_down_percentage', 'watchlist_portfolio_users', 'market_cap_rank']
         for key in useful_keys:
             if key == "description":
-                value = response.json()[key]['en']
+                description_text = response.json()[key].get('en', '')
+                words = description_text.split()[:150]  # First 150 words
+                value = ' '.join(words)
+                if len(description_text.split()) > 150:
+                    value += "..."
             else:
                 value = response.json()[key]
 

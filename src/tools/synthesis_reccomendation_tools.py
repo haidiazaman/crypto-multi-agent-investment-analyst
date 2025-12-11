@@ -1,81 +1,7 @@
-import os
 from typing import Dict, List, Optional, Any
-import requests
-
-# ==================== OpenAI API for Summarization ====================
 
 
-# def summarize_findings(data_points: List[Dict[str, Any]], max_tokens: int = 300) -> Optional[str]:
-#     """
-#     Summarizes multiple data points and findings into a concise investment summary.
-    
-#     Args:
-#         data_points (list): List of dictionaries containing analysis results.
-#                            Example: [
-#                                {"source": "market_data", "data": {...}},
-#                                {"source": "technical_analysis", "data": {...}},
-#                                {"source": "risk_metrics", "data": {...}}
-#                            ]
-#         max_tokens (int): Maximum tokens for the summary (default: 300).
-    
-#     Returns:
-#         str: Concise summary of findings.
-#              Example: "Bitcoin shows bullish momentum with RSI at 58 and positive 7-day returns..."
-#         None: If summarization fails.
-#     """
-#     try:
-#         # Format data points into a readable string
-#         formatted_data = "\n\n".join([
-#             f"**{dp['source']}**:\n{dp['data']}" for dp in data_points
-#         ])
-        
-#         system_prompt = """You are a cryptocurrency investment analyst. 
-#         Summarize the provided data points into a clear, concise investment overview.
-#         Focus on the most important insights and actionable information.
-#         Be direct and avoid unnecessary jargon."""
-        
-#         user_prompt = f"Analyze and summarize these findings:\n\n{formatted_data}"
-        
-#         headers = {
-#             "Authorization": f"Bearer {OPENAI_API_KEY}",
-#             "Content-Type": "application/json"
-#         }
-        
-#         payload = {
-#             "model": "gpt-3.5-turbo",
-#             "messages": [
-#                 {"role": "system", "content": system_prompt},
-#                 {"role": "user", "content": user_prompt}
-#             ],
-#             "max_tokens": max_tokens,
-#             "temperature": 0.7
-#         }
-        
-#         response = requests.post(OPENAI_BASE_URL, json=payload, headers=headers, timeout=30)
-#         response.raise_for_status()
-        
-#         result = response.json()
-#         summary = result["choices"][0]["message"]["content"]
-        
-#         return summary.strip()
-    
-#     except requests.exceptions.RequestException as e:
-#         print(f"Error calling OpenAI API: {e}")
-#         return None
-#     except Exception as e:
-#         print(f"Error in summarization: {e}")
-#         return None
-
-
-# ==================== Risk Score Generator ====================
-
-def generate_risk_score(
-    volatility: float,
-    var_pct: float,
-    momentum: str,
-    trend_signal: str,
-    correlation_score: Optional[float] = None
-) -> Optional[Dict]:
+def generate_risk_score(volatility: float, var_pct: float, momentum: str, trend_signal: str, correlation_score: Optional[float] = None) -> Optional[Dict]:
     """
     Generates a comprehensive risk score for an investment decision.
     
@@ -173,16 +99,7 @@ def generate_risk_score(
         return None
 
 
-# ==================== Investment Recommendation Generator ====================
-
-def generate_investment_recommendation(
-    coin_name: str,
-    current_price: float,
-    risk_score: Dict,
-    technical_signals: Dict,
-    market_sentiment: Optional[str] = None,
-    user_risk_tolerance: str = "medium"
-) -> Optional[Dict]:
+def generate_investment_recommendation(coin_name: str, current_price: float, risk_score: Dict, technical_signals: Dict, market_sentiment: Optional[str] = None, user_risk_tolerance: str = "medium") -> Optional[Dict]:
     """
     Generates actionable investment recommendations based on all analyses.
     
@@ -341,8 +258,6 @@ def generate_investment_recommendation(
         print(f"Error generating investment recommendation: {e}")
         return None
 
-
-# ==================== Test Function ====================
 
 def test_synthesis_recommendation_tools():
     """
