@@ -118,7 +118,7 @@ class Agent:
                     if message.tool_calls:
                         for tool_call in message.tool_calls:
                             tool_call_id_mapping[tool_call["id"]] = tool_call['name']
-                            print(f"🔧 Calling: {tool_call['name']}, Args: {str(tool_call['args'])[:100]}...")                    
+                            print(f"🔧 testing 123 Calling: {tool_call['name']}, Args: {str(tool_call['args'])[:100]}...")                    
                     elif message.content:
                         print(f"\n💬 {message.content}")
                         # self._stream_final_response(message.content)
@@ -134,6 +134,7 @@ class Agent:
         Run the agent in streaming mode with token-level streaming
         To run you need to use asyncio --> asyncio.run(agent.astream(messages))
         """
+        collected_content = ""
         async for event in self.graph.astream_events({"messages": messages}, version="v2"):
             kind = event["event"]
             
@@ -150,6 +151,9 @@ class Agent:
                 elif chunk.content:
                     # Stream final response token by token
                     print(chunk.content, end="", flush=True)
+                    collected_content += chunk.content  # ← Collect
+        
+        return collected_content  # ← Return
 
     def conversation(self):
         """Run synchronous conversation loop with memory and streaming"""
@@ -176,8 +180,10 @@ class Agent:
                 break
             
             messages.append(HumanMessage(content=user_input))
-            await self.astream(messages=messages)
+            response = await self.astream(messages=messages)
+            messages.append(AIMessage(content=response))      # ← Add to history
             print()  # Newline after response
+
 
 
 if __name__ == "__main__":
