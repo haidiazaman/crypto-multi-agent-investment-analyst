@@ -4,6 +4,49 @@ from typing import List, Dict, Optional
 import requests
 
 
+def get_historical_close_prices(coin_id: str = "bitcoin", vs_currency: str = "usd", days: int = 30) -> Optional[Dict]:
+    """
+    Fetches historical Close prices data for a cryptocurrency. 
+    Only daily interval prices can be fetched.
+    
+    Args:
+        coin_id (str): CoinGecko coin ID (e.g., "bitcoin", "ethereum").
+        vs_currency (str): Currency to price against (default: "usd").
+        days (int): Number of days of historical data (default: 30).
+    
+    Returns:
+        dict: Historical price data.
+              Example for bitcoin 30 days: {
+                  "coin_id": "bitcoin",
+                  "days": 30
+                  "prices": [...],
+              }
+        None: If the request fails.
+    """
+    try:
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart"
+        params = {
+            "vs_currency": vs_currency,
+            "days": days,
+            "interval": "daily"
+        }
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        prices = [price[1] for price in data["prices"]]
+
+        result = {}
+        result["coin_id"] = coin_id
+        result["days"] = days
+        result['prices'] = prices
+        return result
+    
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching historical OHLCV data: {e}")
+        return None
+    
+
 def calculate_returns_from_prices(prices_data: Dict[str, List[float]]) -> Dict[str, List[float]]:
     """
     Converts price data to daily returns for portfolio analysis.

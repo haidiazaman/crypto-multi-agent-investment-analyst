@@ -2,11 +2,7 @@ import requests
 import numpy as np
 from typing import Optional, Dict, List
 
-def get_historical_close_prices_and_volumes(
-        coin_id: str = "bitcoin", 
-        vs_currency: str = "usd", 
-        days: int = 30
-    ) -> Optional[Dict]:
+def get_historical_close_prices_and_volumes(coin_id: str = "bitcoin", vs_currency: str = "usd", days: int = 30) -> Optional[Dict]:
     """
     Fetches historical Close prices and Volume data for a cryptocurrency. 
     Only daily interval prices can be fetched.
@@ -37,7 +33,8 @@ def get_historical_close_prices_and_volumes(
         response.raise_for_status()
         
         data = response.json()
-        prices, volumes = extract_prices_volumes_from_data(prices_volumes_data=data)
+        prices = [price[1] for price in data["prices"]]
+        volumes = [volume[1] for volume in data["total_volumes"]]
 
         result = {}
         result["coin_id"] = coin_id
@@ -49,24 +46,6 @@ def get_historical_close_prices_and_volumes(
     except requests.exceptions.RequestException as e:
         print(f"Error fetching historical OHLCV data: {e}")
         return None
-
-def extract_prices_volumes_from_data(prices_volumes_data: Dict) -> tuple:
-    """
-    Extracts price and volume lists from get_historical_close_prices_and_volumes(...) response.
-    
-    Args:
-        prices_volumes_data (dict): Response from https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart
-    
-    Returns:
-        tuple: (prices_list, volumes_list)
-    """
-    try:
-        prices = [price[1] for price in prices_volumes_data["prices"]]
-        volumes = [volume[1] for volume in prices_volumes_data["total_volumes"]]
-        return prices, volumes
-    except Exception as e:
-        print(f"Error extracting prices: {e}")
-        return None, None
 
 def calculate_technical_indicators(prices: List[float]) -> Optional[Dict]:
     """
