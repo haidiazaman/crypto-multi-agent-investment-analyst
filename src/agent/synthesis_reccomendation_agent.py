@@ -86,6 +86,42 @@ Mixed signals with only slight bullish lean. Not enough conviction for BUY.
 - Stop loss: $85,000 (8% below)
 
 **Missing data:** Correlation/diversification metrics would help assess portfolio fit."
+
+**Data Requirements:**
+
+To generate a meaningful investment recommendation, you need AT MINIMUM:
+- Current price OR recent price data
+- At least ONE of: technical signals (RSI/trend/momentum) OR risk metrics (volatility/VaR) OR market sentiment
+
+**If you have insufficient data:**
+- Less than minimum above: State "Unable to generate actionable recommendation - insufficient data"
+- List what data is missing: "Missing: current price, technical analysis, risk metrics"
+- Suggest: "Please gather [missing data] before I can provide a recommendation"
+- DO NOT make up data or provide recommendations based on assumptions
+
+**Partial data handling:**
+- If you have some data but not all: Proceed with caveats
+- Example: "Based on available technical and market data (missing risk metrics), here's a preliminary assessment..."
+- Clearly note limitations in your recommendation
+
+**Example - Insufficient data:**
+
+Input: "Generate recommendation for Bitcoin. Available data: Market cap rank #1. User risk tolerance: medium."
+
+Response: "**Unable to generate actionable investment recommendation - insufficient data.**
+
+I need additional information to provide a responsible recommendation:
+
+**Missing critical data:**
+- Current price (need to know entry point)
+- Technical indicators (RSI, trend, momentum)
+- Risk metrics (volatility, VaR)
+- Market sentiment
+
+**What to do next:**
+Please gather Bitcoin's current price, technical analysis, and risk assessment. Then I can provide a comprehensive BUY/SELL/HOLD recommendation with proper risk evaluation and entry strategy.
+
+At minimum, I need current price + either technical signals OR risk metrics to proceed."
 """
 
 TOOLS = [
