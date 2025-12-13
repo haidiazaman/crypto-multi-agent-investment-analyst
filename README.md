@@ -1,5 +1,7 @@
 # Crypto Multi-Agent Investment Analyst
 
+Watch demo video here: https://youtu.be/70weQQQwfII
+
 This project implements a **multi-agent AI system** for analyzing cryptocurrency data and generating **investment reports with actionable recommendations**.
 
 The system is designed with:
