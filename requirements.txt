@@ -1,0 +1,11 @@
+numpy
+pandas
+pydantic
+requests
+python-dotenv
+langchain
+langchain-core
+langchain-openai
+langchain-ollama
+langgraph
+streamlit
