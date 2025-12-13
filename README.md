@@ -12,8 +12,11 @@ The system is designed with:
 
 ## 🚀 Getting Started
 
-### 1️⃣ Create a Python virtual environment
+### 1️⃣ Create a Python virtual environment and install dependencies
 From the project root directory:
 
-```bash
+```
 python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
