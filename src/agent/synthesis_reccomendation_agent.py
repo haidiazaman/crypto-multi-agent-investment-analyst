@@ -3,7 +3,7 @@ import json
 import asyncio
 from src.agent.base import Agent
 from src.tools.python_tool import PythonTool
-from src.models.openai_genaihub import OpenAILLMGenAIHub
+from src.models.openai_model import OpenAILLM
 from src.tools.synthesis_reccomendation_tools import generate_investment_recommendation, generate_risk_score
 
 # --- Load mapping ---
@@ -135,7 +135,10 @@ class SynthesisReccomendationAgent(Agent):
 
 
 if __name__=="__main__":
-    llm = OpenAILLMGenAIHub(model_name='gpt-4o', temperature=0.)
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    llm = OpenAILLM(model_name='gpt-4o', temperature=0.)
     agent = SynthesisReccomendationAgent(llm=llm)
 
     # while True:

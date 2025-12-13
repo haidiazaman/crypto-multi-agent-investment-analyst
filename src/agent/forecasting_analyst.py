@@ -3,7 +3,7 @@ import json
 import asyncio
 from src.agent.base import Agent
 from src.tools.python_tool import PythonTool
-from src.models.openai_genaihub import OpenAILLMGenAIHub
+from src.models.openai_model import OpenAILLM
 from src.tools.forecasting_analysis_tools import get_historical_close_prices_and_volumes, calculate_technical_indicators, analyze_price_volume_trend
 
 # --- Load mapping ---
@@ -211,7 +211,10 @@ class ForecastingTechnicalAnalystAgent(Agent):
         super().__init__(name, llm, tools, system_prompt)
 
 if __name__=="__main__":
-    llm = OpenAILLMGenAIHub(model_name='gpt-4o', temperature=0.)
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    llm = OpenAILLM(model_name='gpt-4o', temperature=0.)
     agent = ForecastingTechnicalAnalystAgent(llm=llm)
 
     # while True:
