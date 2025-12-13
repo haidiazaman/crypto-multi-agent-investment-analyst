@@ -9,9 +9,7 @@ The system is designed with:
 - support for **multiple LLM backends**
 
 ---
-![Multi-Agent Architecture](assets/architecture.png)
-
-| ![Architecture](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image.png)) | ![Other Image]((https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image%20copy.png)) |
+![App demo](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image1.png)
 
 ---
 
