@@ -308,14 +308,6 @@ def test_synthesis_recommendation_tools():
         user_risk_tolerance="medium"
     )
     print(recommendation)
-    
-    # # Test 3: Summarize Findings (only if OpenAI API key is set)
-    # if OPENAI_API_KEY != "your_openai_api_key_here":
-    #     print("\n3. Summarizing Findings:")
-    #     summary = summarize_findings(data_points)
-    #     print(summary)
-    # else:
-    #     print("\n3. Skipping OpenAI summarization test (API key not set)")
 
 
 if __name__ == "__main__":

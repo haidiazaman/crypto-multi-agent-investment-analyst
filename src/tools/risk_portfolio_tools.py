@@ -46,7 +46,6 @@ def get_historical_close_prices(coin_id: str = "bitcoin", vs_currency: str = "us
         print(f"Error fetching historical OHLCV data: {e}")
         return None
     
-
 def calculate_returns_from_prices(prices_data: Dict[str, List[float]]) -> Dict[str, List[float]]:
     """
     Converts price data to daily returns for portfolio analysis.
@@ -247,6 +246,7 @@ def generate_sample_returns(coins: List[str], days: int = 100, seed: int = 42) -
     
     return returns_data
 
+# ==================== Test Function ====================
 
 def test_risk_portfolio_tools():
     """
