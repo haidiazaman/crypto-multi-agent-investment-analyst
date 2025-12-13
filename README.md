@@ -9,7 +9,11 @@ The system is designed with:
 - support for **multiple LLM backends**
 
 ---
-![App demo](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image1.png)
+## Agent architecture (multi agent - supervisor subordinate - langraph)
+!(https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image.png)
+
+## App demo
+!(https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image1.png)
 
 ---
 
