@@ -5,7 +5,7 @@ This project implements a **multi-agent AI system** for analyzing cryptocurrency
 The system is designed with:
 - clear **agent separation of concerns**
 - **tool calling** for data retrieval and analysis
-- **human-in-the-loop** interaction
+- **human-in-the-loop** interaction via a ChatUI interface like ChatGPT
 - support for **multiple LLM backends**
 
 ---
