@@ -11,7 +11,7 @@ The system is designed with:
 ---
 ![Multi-Agent Architecture](assets/architecture.png)
 
-| ![Architecture]([assets/architecture.png](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image.png)) | ![Other Image]([assets/other-image.png](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image%20copy.png)) |
+| ![Architecture](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image.png)) | ![Other Image]((https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image%20copy.png)) |
 
 ---
 
