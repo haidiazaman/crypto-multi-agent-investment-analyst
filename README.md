@@ -13,6 +13,8 @@ The system is designed with:
 ## 🚀 Getting Started
 
 ### Create a Python virtual environment and install dependencies
+Use Python 3.12.4
+
 From the project root directory:
 
 ```
@@ -24,7 +26,8 @@ pip install -r requirements.txt
 ### 🤖 LLM Backend Options
 
 This project supports two LLM implementations:
-1. Option 1: OpenAI (Default & Recommended) -> Uses OpenAI’s API for LLM reasoning and agent coordination.
+#### Option 1: OpenAI (Default & Recommended) 
+-> Uses OpenAI’s API for LLM reasoning and agent coordination.
 
 
 Requirements:
@@ -34,10 +37,41 @@ Requirements:
 
 Setup:
 
-Create a .env file in the project root:
+Create a .env file in the project root and the following line:
 ```
 OPENAI_API_KEY=your_api_key_here
 ```
 
 Ensure the .env file is not committed (already ignored via .gitignore).
+
 ✅ This is the default configuration and the recommended way to run the project.
+
+
+#### Option 2: Local Ollama Model (Advanced / Not Recommended)
+- Uses a locally hosted Ollama model instead of OpenAI.
+- Use the OllamaLLM class in src/models/ollama_model.py
+
+
+## 🧪 Running the Application
+
+Before running any mode, make sure you are in the project root directory and your virtual environment is activated.
+
+### 🐞 Run in Debug / Terminal Mode
+
+This mode runs the full multi-agent pipeline directly in the terminal with verbose output.
+```
+cd <path-to-project-root>
+export PYTHONPATH="."
+python src/run_orchestrator_terminal.py
+```
+
+### 💬 Run in Chat UI Mode (Streamlit)
+
+This launches an interactive chatbot-style UI for human-in-the-loop interaction.
+```
+cd <path-to-project-root>
+export PYTHONPATH="."
+streamlit run src/app.py
+```
+
+Once started, Streamlit will display a local URL in the terminal (usually http://localhost:8501).
