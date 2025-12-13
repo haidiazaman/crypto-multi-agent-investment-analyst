@@ -134,7 +134,6 @@ class Agent:
         Run the agent in streaming mode with token-level streaming
         To run you need to use asyncio --> asyncio.run(agent.astream(messages))
         """
-        collected_content = ""
         async for event in self.graph.astream_events({"messages": messages}, version="v2"):
             kind = event["event"]
             
@@ -149,11 +148,20 @@ class Agent:
                             print(f"\n🔧 Calling: {tc['name']}\n")
                 
                 elif chunk.content:
-                    # Stream final response token by token
-                    print(chunk.content, end="", flush=True)
-                    collected_content += chunk.content  # ← Collect
+                    print(chunk.content, end="", flush=True) # Stream final response token by token
+
+            # Capture final state (keep updating until last one)
+            if kind == "on_chain_end":
+                output = event["data"]["output"]
+                if isinstance(output, dict) and "messages" in output:
+                    final_messages = output["messages"]
         
-        return collected_content  # ← Return
+        # Return last AI message
+        if final_messages and len(final_messages) > 0:
+            last_msg = final_messages[-1]
+            return last_msg.content if hasattr(last_msg, 'content') else str(last_msg)
+        
+        return ""
 
     def conversation(self):
         """Run synchronous conversation loop with memory and streaming"""
