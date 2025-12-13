@@ -1,8 +1,8 @@
 import re
 import json
+from src.models.base import BaseLLM
 from langchain_ollama import ChatOllama
 from langchain_core.messages import AIMessage
-from src.models.base import BaseLLM
 
 
 class OllamaLLM(BaseLLM):

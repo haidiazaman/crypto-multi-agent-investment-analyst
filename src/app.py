@@ -1,8 +1,11 @@
 import asyncio
 import streamlit as st
-from langchain_core.messages import HumanMessage, AIMessage
-from src.models.openai_genaihub import OpenAILLMGenAIHub
+from dotenv import load_dotenv
+from src.models.openai_model import OpenAILLM
 from src.agent.orchestrator_agent import OrchestratorAgent
+from langchain_core.messages import HumanMessage, AIMessage
+
+load_dotenv()
 
 st.title("💰 Multi-Agent Crypto Investment Analyst")
 
@@ -18,7 +21,7 @@ st.title("💰 Multi-Agent Crypto Investment Analyst")
 # Initialize agent once --> because the script reruns from the top at every turn
 # st.session_state only persists during the session. Browser refresh = new session = history cleared.
 if "agent" not in st.session_state:
-    llm = OpenAILLMGenAIHub(model_name='gpt-4o', temperature=0.)
+    llm = OpenAILLM(model_name='gpt-4o', temperature=0.)
     st.session_state.agent = OrchestratorAgent(llm=llm)
 
 # Initialize messages --> because the script reruns from the top at every turn
