@@ -10,10 +10,10 @@ The system is designed with:
 
 ---
 ## Agent architecture (multi agent - supervisor subordinate - langraph)
-!(https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image.png)
+![architecture](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image.png)
 
 ## App demo
-!(https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image1.png)
+![demo](https://github.com/haidiazaman/crypto-multi-agent-investment-analyst/blob/main/imgs/image1.png)
 
 ---
 
