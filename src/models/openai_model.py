@@ -9,7 +9,7 @@ class OpenAILLM(BaseLLM):
     def _initialize_model(self):
         return ChatOpenAI(model=self.model_name, temperature=self.temperature)
     
-    def parse_tool_calls(ahhself, response: AIMessage) -> AIMessage:
+    def parse_tool_calls(self, response: AIMessage) -> AIMessage:
         """OpenAI responses already have tool_calls populated correctly"""
         return response
 
