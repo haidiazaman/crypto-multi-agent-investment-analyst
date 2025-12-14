@@ -60,7 +60,7 @@ class Agent:
             )
         return {"messages": result}
     
-    def _should_continue(self, state: MessagesState) -> Literal["tool_node", END]:
+    def _should_continue(self, state: MessagesState) -> Literal["tool_node", END]: # type: ignore
         """Routing logic: continue to tools or end"""
         last_message = state["messages"][-1]
         if last_message.tool_calls:
