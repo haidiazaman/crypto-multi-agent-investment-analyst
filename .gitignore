@@ -1,3 +1,4 @@
+*.DS_Store
 notebooks/
 src/models/openai_genaihub.py
 

@@ -1,7 +1,7 @@
+import requests
 import numpy as np
 import pandas as pd
 from typing import List, Dict, Optional
-import requests
 
 
 def get_historical_close_prices(coin_id: str = "bitcoin", vs_currency: str = "usd", days: int = 30) -> Optional[Dict]:

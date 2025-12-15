@@ -8,5 +8,6 @@ if __name__=="__main__":
     load_dotenv()
 
     llm = OpenAILLM(model_name='gpt-4o', temperature=0.)
-    agent = OrchestratorAgent(llm=llm)
+    subagent_shared_llm = OpenAILLM(model_name='gpt-4o', temperature=0.)
+    agent = OrchestratorAgent(llm=llm, sub_agent_shared_llm=subagent_shared_llm)
     asyncio.run(agent.aconversation())

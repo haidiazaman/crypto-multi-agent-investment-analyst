@@ -22,7 +22,8 @@ st.title("💰 Multi-Agent Crypto Investment Analyst")
 # st.session_state only persists during the session. Browser refresh = new session = history cleared.
 if "agent" not in st.session_state:
     llm = OpenAILLM(model_name='gpt-4o', temperature=0.)
-    st.session_state.agent = OrchestratorAgent(llm=llm)
+    subagent_shared_llm = OpenAILLM(model_name='gpt-4o', temperature=0.)
+    st.session_state.agent = OrchestratorAgent(llm=llm, sub_agent_shared_llm=subagent_shared_llm)
 
 # Initialize messages --> because the script reruns from the top at every turn
 if "messages" not in st.session_state:
