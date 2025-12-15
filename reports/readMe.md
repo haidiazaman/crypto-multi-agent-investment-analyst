@@ -1,1 +1,4 @@
 The final investment report can be found above. The conversation history (UI and with intermediate results from tool calling) that generated this report can also be found above.
+
+
+(i did not include intermeduate results for the 2nd report.)
